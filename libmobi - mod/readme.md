@@ -108,7 +108,7 @@ Windows:
 2. Drag and drop mobitoolmod into the project directory, drag it into the mobitool sub-project in VS
 3. Right click on libmobi project -> c/c++ -> Preprocessor Definitions -> Append USE_MINIZ;
 4. enable all disabled in libmobi
-5. Right click libmobi -> librarian -> link library dependencies yes
+5. Right click mobitool -> librarian -> link library dependencies yes
 6. Configuration Type -> Static Library
 7. Goto mobitool subproject -> properties -> advanced -> Character set -> Not Set
 8. Goto mobitool subproject -> properties -> advanced -> Whole Program Optimization -> No Whole Program Optimization
