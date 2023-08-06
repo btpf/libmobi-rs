@@ -100,6 +100,28 @@ Linux:
 ./autogen.sh && ./configure --with-libxml2=no --with-zlib=no && make
 ```
 
+
+
+Windows:
+
+1. Navigate to msvc/ folder and open sln. Change the profile to release and x64
+2. Drag and drop mobitoolmod into the project directory, drag it into the mobitool sub-project in VS
+3. Right click on libmobi project -> c/c++ -> Preprocessor Definitions -> Append USE_MINIZ;
+4. enable all disabled in libmobi
+5. Right click libmobi -> librarian -> link library dependencies yes
+6. Configuration Type -> Static Library
+7. Goto mobitool subproject -> properties -> advanced -> Character set -> Not Set
+8. Goto mobitool subproject -> properties -> advanced -> Whole Program Optimization -> No Whole Program Optimization
+9. Everything besides common and mobitoolmod can be deleted inside of mobitool sub-project
+
+
+
+---
+
+Note: The below will not work for Alexandria, but will be kept for reference.
+The reason why it will not work is because tauri requires that the project be linked with the MSVC Linker.
+However, mingw adds unix specific commands in it's specification, and when linked with MSVC, these standards are not also linked in.
+
 Windows - Ensure that mingw is installed on system before compiling:
 ```
 ./autogen.sh && ./configure --host x86_64-w64-mingw32 --with-libxml2=no --with-zlib=no && make

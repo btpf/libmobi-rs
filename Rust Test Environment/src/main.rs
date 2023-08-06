@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use epubconvert::{convertToEpub, MOBI_RET};
+use libmobi_rs::{convertToEpub, MOBI_RET};
 
 fn main() {
     println!("Hello, world!");
