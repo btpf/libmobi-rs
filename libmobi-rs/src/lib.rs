@@ -77,7 +77,7 @@ mod tests {
     fn libMobiFFI() {
         let output = convertToEpubWrapper("./book.azw3",
         "./");
-        println!("Ignore any above. Check unit test right below this returns \"ok\"");
+        println!("Ignore any errors above. Check unit test right below this returns \"ok\"");
 
         let expectedTestOutput = format!("libmobi returned: {:?}", MOBI_RET::MOBI_ERROR);
 
