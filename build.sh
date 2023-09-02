@@ -8,6 +8,8 @@ git clone https://github.com/bfabiszewski/libmobi.git
 
 cp -r "./libmobi - mod/Mod/libmobi/" ./
 sed -i 's/\$(top_builddir)/../g' ./libmobi/tools/Makefile.am # The sed command is needed for ancient builds of autotools. 
+
+# Build Application
 cd ./libmobi
 ./autogen.sh && ./configure --with-libxml2=no --with-zlib=no && make # The autogen line will build libmobi
 cd ..
