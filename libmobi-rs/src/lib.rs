@@ -74,9 +74,13 @@ mod tests {
     use crate::{convertToEpub, MOBI_RET, convertToEpubWrapper};
     
     #[test]
-    fn test() {
-        println!("{}", convertToEpubWrapper("./book.azw3",
-        "./"));
-    
+    fn libMobiFFI() {
+        let output = convertToEpubWrapper("./book.azw3",
+        "./");
+        println!("Ignore any above. Check unit test right below this returns \"ok\"");
+
+        let expectedTestOutput = format!("libmobi returned: {:?}", MOBI_RET::MOBI_ERROR);
+
+        assert_eq!(output, expectedTestOutput)
     }
 }

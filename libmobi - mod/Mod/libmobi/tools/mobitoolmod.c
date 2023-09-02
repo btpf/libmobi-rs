@@ -21,6 +21,7 @@
 /* include libmobi header */
 #include <mobi.h>
 #include "common.h"
+#include "./mobitoolmod.h"
 
 /* miniz file is needed for EPUB creation */
 #ifdef USE_XMLWRITER
@@ -923,149 +924,39 @@ static void exit_with_usage(const char *progname) {
     exit(SUCCESS);
 }
 
-/**
- @brief Main
- 
- @param[in] argc Arguments count
- @param[in] argv Arguments array
- @return SUCCESS (0) or ERROR (1)
- */
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        exit_with_usage(argv[0]);
+
+int convertToEpub(char *sourceFilePath, char *destFolderPath) {
+
+    char sourcePath[FILENAME_MAX];
+    strncpy(sourcePath, sourceFilePath, FILENAME_MAX - 1);
+    strncpy(outdir, destFolderPath, FILENAME_MAX - 1);
+
+    normalize_path(outdir);
+    normalize_path(sourcePath);
+    create_epub_opt = true;
+    outdir_opt = true;
+
+    if (!dir_exists(outdir)) {
+        printf("Output directory is not valid\n");
+        return ERROR;
     }
-    opterr = 0;
-    int c;
-    while ((c = getopt(argc, argv, "cd" PRINT_EPUB_ARG "himo:" PRINT_ENC_ARG "rst" PRINT_RUSAGE_ARG "vx7")) != -1) {
-        switch (c) {
-            case 'c':
-                dump_cover_opt = true;
-                break;
-            case 'd':
-                dump_rawml_opt = true;
-                break;
-#ifdef USE_XMLWRITER
-            case 'e':
-                create_epub_opt = true;
-                break;
-#endif
-            case 'i':
-                print_extended_meta_opt = true;
-                break;
-            case 'm':
-                print_rec_meta_opt = true;
-                break;
-            case 'o':
-                outdir_opt = true;
-                size_t outdir_length = strlen(optarg);
-                if (outdir_length == 2 && optarg[0] == '-') {
-                    printf("Option -%c requires an argument.\n", c);
-                    return ERROR;
-                }
-                if (outdir_length >= FILENAME_MAX - 1) {
-                    printf("Output directory name too long\n");
-                    return ERROR;
-                }
-                strncpy(outdir, optarg, FILENAME_MAX - 1);
-                normalize_path(outdir);
-                if (!dir_exists(outdir)) {
-                    printf("Output directory is not valid\n");
-                    return ERROR;
-                }
-                if (optarg[outdir_length - 1] != separator) {
-                    // append separator
-                    if (outdir_length >= FILENAME_MAX - 2) {
-                        printf("Output directory name too long\n");
-                        return ERROR;
-                    }
-                    outdir[outdir_length++] = separator;
-                    outdir[outdir_length] = '\0';
-                }
-                break;
-#ifdef USE_ENCRYPTION
-            case 'p':
-                if (strlen(optarg) == 2 && optarg[0] == '-') {
-                    printf("Option -%c requires an argument.\n", c);
-                    return ERROR;
-                }
-                setpid_opt = true;
-                pid = optarg;
-                break;
-            case 'P':
-                if (strlen(optarg) == 2 && optarg[0] == '-') {
-                    printf("Option -%c requires an argument.\n", c);
-                    return ERROR;
-                }
-                setserial_opt = true;
-                serial = optarg;
-                break;
-#endif
-            case 'r':
-                dump_rec_opt = true;
-                break;
-            case 's':
-                dump_parts_opt = true;
-                break;
-            case 't':
-                split_opt = true;
-                break;
-#ifdef HAVE_SYS_RESOURCE_H
-            case 'u':
-                print_rusage_opt = true;
-                break;
-#endif
-            case 'v':
-                printf("mobitool build: " __DATE__ " " __TIME__ " (" COMPILER ")\n");
-                printf("libmobi: %s\n", mobi_version());
-                return SUCCESS;
-            case 'x':
-                extract_source_opt = true;
-                break;
-            case '7':
-                parse_kf7_opt = true;
-                break;
-            case '?':
-                if (isprint(optopt)) {
-                    fprintf(stderr, "Unknown option `-%c'\n", optopt);
-                }
-                else {
-                    fprintf(stderr, "Unknown option character `\\x%x'\n", optopt);
-                }
-                exit_with_usage(argv[0]);
-            case 'h':
-            default:
-                exit_with_usage(argv[0]);
+
+    size_t outdir_length = strlen(outdir);
+
+    if (outdir[outdir_length - 1] != separator) {
+        // append separator
+        if (outdir_length >= FILENAME_MAX - 2) {
+            printf("Output directory name too long\n");
+            return ERROR;
         }
+        outdir[outdir_length++] = separator;
+        outdir[outdir_length] = '\0';
     }
-    if (argc <= optind) {
-        printf("Missing filename\n");
-        exit_with_usage(argv[0]);
-    }
-    
+
+    sourcePath[FILENAME_MAX - 1] = '\0';
     int ret = SUCCESS;
-    char filename[FILENAME_MAX];
-    strncpy(filename, argv[optind], FILENAME_MAX - 1);
-    filename[FILENAME_MAX - 1] = '\0';
-    normalize_path(filename);
-    
-    ret = loadfilename(filename);
-    if (split_opt) {
-        printf("\nSplitting hybrid file...\n");
-        ret = split_hybrid(filename);
-    }
-#ifdef HAVE_SYS_RESOURCE_H
-    if (print_rusage_opt) {
-        /* rusage */
-        struct rusage ru;
-        struct timeval utime;
-        struct timeval stime;
-        getrusage(RUSAGE_SELF, &ru);
-        utime = ru.ru_utime;
-        stime = ru.ru_stime;
-        printf("RUSAGE: ru_utime => %lld.%lld sec.; ru_stime => %lld.%lld sec.\n",
-               (long long) utime.tv_sec, (long long) utime.tv_usec,
-               (long long) stime.tv_sec, (long long) stime.tv_usec);
-    }
-#endif
+    ret = loadfilename(sourcePath);
+
     return ret;
+
 }
