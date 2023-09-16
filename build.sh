@@ -1,7 +1,10 @@
  
- # Clone the latest libmobi
- rm -rfd ./libmobi 
-git clone https://github.com/bfabiszewski/libmobi.git
+# Although libmobi has now been added as a submodule, make sure to clean the libmobi between builds
+# Since leftover data can interfere with subsequent builds
+
+# Clone the latest libmobi
+#  rm -rfd ./libmobi 
+# git clone https://github.com/bfabiszewski/libmobi.git
 
 
 # Begin Patching
