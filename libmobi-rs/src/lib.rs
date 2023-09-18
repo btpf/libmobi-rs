@@ -57,8 +57,8 @@ impl From<u32> for MOBI_RET {
 pub fn convertToEpubWrapper(c_str_src: &str, c_str_dest: &str) -> String{
     let c_str_src = CString::new(c_str_src).unwrap();
     let c_str_dest = CString::new(c_str_dest).unwrap();
-    let c_str_src = c_str_src.as_ptr() as *mut i8;
-    let c_str_dest = c_str_dest.as_ptr() as *mut i8;
+    let c_str_src = c_str_src.as_ptr() as *mut ::std::os::raw::c_char;
+    let c_str_dest = c_str_dest.as_ptr() as *mut ::std::os::raw::c_char;
     let mut returnCode: ::std::os::raw::c_int = -2;
     unsafe{
         returnCode = convertToEpub(c_str_src, c_str_dest);
